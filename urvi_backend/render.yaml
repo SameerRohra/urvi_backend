@@ -2,12 +2,16 @@ services:
   - type: web
     name: urvi-backend
     env: node
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
-        value: your-database-url-here
+      - key: MONGO_URI
+        value: mongodb+srv://rohrasameershankarlal:Sameer12345@cluster0.0squc4i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: supersecretkeyforurvi123
+      - key: PORT
+        value: 5000
     branch: main
     autoDeploy: true
