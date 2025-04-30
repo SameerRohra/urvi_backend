@@ -5,7 +5,9 @@ const jwt = require('jsonwebtoken');
 // Register new user
 exports.register = async (req, res) => {
   try {
-    const { email, password, ...rest } = req.body;
+    console.log(req.body);  // Log to check data coming in
+
+    const { email, password, fullName, dateOfBirth, ...rest } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -16,46 +18,46 @@ exports.register = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Create new user instance
     const newUser = new User({
+      fullName,
       email,
+      dateOfBirth, // Added date of birth
       password: hashedPassword,
-      ...rest, // 12 questions data will be saved here
+      ...rest, // Save other data as needed
     });
 
     await newUser.save();
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
 // Login user
-// Login user
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user by email, making sure to include all fields
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Create token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    // Prepare the user data (include the required fields)
     const userData = {
       _id: user._id,
       email: user.email,
+      fullName: user.fullName,
+      dateOfBirth: user.dateOfBirth, // Added date of birth
       goals: user.goals,
       periodRegularity: user.periodRegularity,
       avgPeriodDuration: user.avgPeriodDuration,
@@ -71,12 +73,12 @@ exports.login = async (req, res) => {
       hydrationHabit: user.hydrationHabit,
       exerciseLevel: user.exerciseLevel,
       weight: user.weight,
-      height: user.height
+      height: user.height,
     };
 
-    // Send response with token and full user data
     res.status(200).json({ token, user: userData });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

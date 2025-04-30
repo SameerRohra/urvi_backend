@@ -6,6 +6,8 @@ exports.updateProfile = async (req, res) => {
     const { userId } = req.params;
     const {
       email,
+      fullName,
+      dateOfBirth,
       goals,
       periodRegularity,
       avgPeriodDuration,
@@ -32,6 +34,8 @@ exports.updateProfile = async (req, res) => {
       userId,
       {
         email,
+        fullName, // Explicitly include fullName in update
+        dateOfBirth, // Added date of birth
         goals,
         periodRegularity,
         avgPeriodDuration,

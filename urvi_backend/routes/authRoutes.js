@@ -14,6 +14,6 @@ router.post('/login', login);
 router.put('/update/:userId', authMiddleware, updateProfile);
 
 // Profile Fetch Route (GET)
-router.get('/update/:userId', authMiddleware, getProfile);
+router.get('/profile/:userId', authMiddleware, getProfile);
 
 module.exports = router;
